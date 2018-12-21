@@ -1,0 +1,76 @@
+<html>
+
+<head>
+    <title>테스트</title>
+    <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>익스프레스 테스트</h1>
+    <div id="div">div 아이디</div>
+    <div class="div">div 클래스</div>
+    <form id="f1">
+        <input type="text" id="userno" name="userno">
+        <input type="text" id="username" name="username">
+        <input type="text" id="userage" name="userage">
+        <button type="button">생성</button>
+        <button type="button">조회</button>
+        <button type="button">수정</button>
+        <button type="button">삭제</button>
+    </form>
+<script>
+    $.fn.serializeObject = function() {
+    var obj = {};
+    var arr = this.serializeArray();
+    arr.forEach(function(item, index) {
+        if (obj[item.name] === undefined) { // New
+            obj[item.name] = item.value || '';
+        } else {                            // Existing
+            if (!obj[item.name].push) {
+                obj[item.name] = [obj[item.name]];
+            }
+            obj[item.name].push(item.value || '');
+        }
+    });
+    return obj;
+};
+
+    $(document).ready(function(){
+        $('h1').on('click',function(){
+           alert($('#div').text());
+        });
+        $('button').on('click',function(){
+            var text = this.innerHTML;
+            var method = 'POST'
+            if(text==='조회'){
+                method = 'GET';
+            }else if(text==='수정'){
+                method = 'PUT';
+            }else if(text==='삭제'){
+                method = 'DELETE';
+            }
+            var params = $('#f1').serializeObject();
+            params = JSON.stringify(params);
+            alert(params);
+            // return;
+            var url="/api/";
+            $.ajax({
+                url:url,
+                type:method,
+                data:params,
+                contentType:'application/json',
+                async:false,
+                success:function(data){
+                    alert(data);
+                },
+                error:function(data){
+                    alert(data);
+                }
+            })
+        })
+    });
+</script>
+</body>
+</html>
